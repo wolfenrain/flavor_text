@@ -1,0 +1,123 @@
+image: cirrusci/flutter:stable
+
+stages:
+  - lint
+  - test
+  - publish
+
+dartdoc:
+  stage: lint
+  script:
+    - flutter pub get
+    - dartdoc --no-auto-include-dependencies --quiet
+  only:
+    refs:
+      - merge_requests
+    changes:
+      - lib/**/*
+      - README.md
+      - .gitlab-ci.yml
+
+flutter_analyze:
+  stage: lint
+  script:
+    - flutter pub get
+    - flutter analyze --pub
+    - flutter format -n --set-exit-if-changed .
+  only:
+    refs:
+      - merge_requests
+    changes:
+      - lib/**/*.dart
+      - test/**/*.dart
+      - .gitlab-ci.yml
+
+unit_test:
+  stage: test
+  script:
+    - flutter test --coverage --pub test
+    - lcov --list ./coverage/lcov.info
+  only:
+    refs:
+      - merge_requests
+      - master
+    changes:
+      - lib/**/*
+      - test/**/*
+      - .gitlab-ci.yml
+
+tag:
+  image: curlimages/curl
+  stage: publish
+  script:
+    - |
+      if [ -z "${GITLAB_API_TOKEN}" ]; then
+        echo "Missing GITLAB_API_TOKEN environment variable"
+        exit 1
+      fi
+
+      export TAG_NAME="$(awk '/^version: /{print $NF}' pubspec.yaml)"
+      curl --fail --request POST --header "PRIVATE-TOKEN: ${GITLAB_API_TOKEN}" \
+        --data-urlencode "tag_name=v${TAG_NAME}" \
+        --data-urlencode "ref=master" \
+        --data-urlencode "release_description=Check the [CHANGELOG.md](${CI_PROJECT_URL}/-/blob/master/CHANGELOG.md)" \
+        "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/repository/tags"
+  environment:
+    name: pub-dev-plugin
+    url: https://pub.dev/packages/flavor_text
+  when: manual
+  only:
+    refs:
+      - master
+
+dry_run_publish:
+  stage: publish
+  script:
+    - flutter pub get
+    - flutter pub publish --dry-run
+  only:
+    refs:
+      - merge_requests
+      
+pub_dev_publish:
+  # https://robertohuertas.com/2019/01/20/publish-flutter-package-with-travis/
+  stage: publish
+  script:
+    - |
+      if [ -z "${PUB_DEV_PUBLISH_ACCESS_TOKEN}" ]; then
+        echo "Missing PUB_DEV_PUBLISH_ACCESS_TOKEN environment variable"
+        exit 1
+      fi
+
+      if [ -z "${PUB_DEV_PUBLISH_REFRESH_TOKEN}" ]; then
+        echo "Missing PUB_DEV_PUBLISH_REFRESH_TOKEN environment variable"
+        exit 1
+      fi
+
+      if [ -z "${PUB_DEV_PUBLISH_TOKEN_ENDPOINT}" ]; then
+        echo "Missing PUB_DEV_PUBLISH_TOKEN_ENDPOINT environment variable"
+        exit 1
+      fi
+
+      if [ -z "${PUB_DEV_PUBLISH_EXPIRATION}" ]; then
+        echo "Missing PUB_DEV_PUBLISH_EXPIRATION environment variable"
+        exit 1
+      fi
+
+      cat <<EOF > ~/.pub-cache/credentials.json
+      {
+        "accessToken":"$(echo "${PUB_DEV_PUBLISH_ACCESS_TOKEN}" | base64 -d)",
+        "refreshToken":"$(echo "${PUB_DEV_PUBLISH_REFRESH_TOKEN}" | base64 -d)",
+        "tokenEndpoint":"${PUB_DEV_PUBLISH_TOKEN_ENDPOINT}",
+        "scopes":["https://www.googleapis.com/auth/userinfo.email","openid"],
+        "expiration":${PUB_DEV_PUBLISH_EXPIRATION}
+      }
+      EOF
+    - flutter pub get
+    - flutter pub publish -f
+  only:
+    refs:
+      - /^v.*$/
+  except:
+    refs:
+      - branches
