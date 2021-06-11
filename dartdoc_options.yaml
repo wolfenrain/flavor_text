@@ -1,5 +1,6 @@
 dartdoc:
     include: ['flavor_text']
+    exclude: ['FlavorText']
     errors:
       - ambiguous-doc-reference
       - ambiguous-reexport
@@ -16,4 +17,6 @@ dartdoc:
       - private-api-across-packages
       - unknown-file
       - unknown-macro
+    warnings:
+      # Sadly there are unresolved reference in StatelessWidget and we inherit those.
       - unresolved-doc-reference
