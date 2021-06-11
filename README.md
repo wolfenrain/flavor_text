@@ -58,6 +58,8 @@ Flavor Text allows you to create custom rich text using strings. You don't have
 to mess with `Text.rich` and `TextSpan`'s. Just you, your text and a single 
 widget.
 
+See the [Basic Usage](#basic-usage) section for an introduction or jump directly to the [Advanced Usage](#advanced-usage) section.
+
 ### Basic Usage
 
 Before you can start using Flavor Text you will need to register the Tag 
