@@ -10,6 +10,36 @@ A lightweight and fully customisable text parser for Flutter.
 package, and is usually printed in italics or written between quotes to 
 distinguish it from game-affecting text.
 
+Writing rich text in Flutter can be a pain:
+
+```dart
+Text.rich(
+    TextSpan(
+        text: 'Welcome',
+        children: [
+            TextSpan(
+                text: 'To my amazing',
+                children: [
+                    TextSpan(
+                        text: 'App!',
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                ],
+                style: TextStyle(color: Color(0xFFFF0000)),
+            )
+        ],
+    ),
+),
+```
+
+But writing rich text with Flavor Text is simply:
+
+```dart
+FlavorText(
+    'Welcome <style color="0xFFFF0000">to my amazing <style weight="bold">App!</style></style>',
+),
+```
+
 ## Installation
 
 Add `flavor_text` as a dependency in your pubspec.yaml file 
