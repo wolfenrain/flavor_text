@@ -11,15 +11,13 @@ part of flavor_text;
 /// final text1 = '<icon>home</icon>';
 /// final text2 = '<icon>phone</icon>';
 /// ```
-class IconTag extends Tag {
-  @override
-  List<String> get supportedProperties => ['family'];
+class IconTag extends StyleTag {
 
   @override
   InlineSpan build(BuildContext context) {
     return TextSpan(
       text: text,
-      style: TextStyle(
+      style: textStyle(context).copyWith(
         fontFamily: when(properties['family'], {
           'CupertinoIcons': () => 'CupertinoIcons',
         }).orElse(() => 'MaterialIcons'),

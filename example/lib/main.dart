@@ -4,9 +4,6 @@ import 'package:flutter/material.dart';
 /// Tag that adds an [Icons.help] icon in text.
 class HelpTag extends Tag {
   @override
-  List<String> get supportedProperties => [];
-
-  @override
   InlineSpan build(BuildContext context) {
     return WidgetSpan(child: Icon(Icons.help));
   }
@@ -38,14 +35,14 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Flavor Text Example')),
+      appBar: AppBar(title: FlavorText('<rainbow>Flavor Text Example</rainbow>')),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            FlavorText('Hello <style color="0xFFFF0000">world</style>!'),
-            FlavorText('Hello <help/> world!'),
-            FlavorText('Welcome <icon>home</icon>'),
+            FlavorText('<style color="primaryColor">Hello</style> <style color="0xFFFF0000">world</style>!'),
+            FlavorText('Hello <help/> <rainbow>world</rainbow>!'),
+            FlavorText('Welcome <icon color="primaryColor">home</icon>'),
           ],
         ),
       ),

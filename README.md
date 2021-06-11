@@ -14,21 +14,21 @@ Writing rich text in Flutter can be a pain:
 
 ```dart
 Text.rich(
-    TextSpan(
-        text: 'Welcome',
+  TextSpan(
+    text: 'Welcome',
+    children: [
+      TextSpan(
+        text: 'To my amazing',
         children: [
-            TextSpan(
-                text: 'To my amazing',
-                children: [
-                    TextSpan(
-                        text: 'App!',
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                ],
-                style: TextStyle(color: Color(0xFFFF0000)),
-            )
+          TextSpan(
+            text: 'App!',
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
         ],
-    ),
+        style: TextStyle(color: Color(0xFFFF0000)),
+      )
+    ],
+  ),
 ),
 ```
 
@@ -36,7 +36,7 @@ But writing rich text with Flavor Text is simply:
 
 ```dart
 FlavorText(
-    'Welcome <style color="0xFFFF0000">to my amazing <style weight="bold">App!</style></style>',
+  'Welcome <style color="0xFFFF0000">to my amazing <style weight="bold">App!</style></style>',
 ),
 ```
 
@@ -70,9 +70,9 @@ has a method for that:
 
 ```dart
 void main() {
-    FlavorText.registerDefaultTags();
+  FlavorText.registerDefaultTags();
     
-    ...
+  ...
 }
 ```
  
@@ -89,15 +89,15 @@ string in our Widget tree like so:
 ```dart
 @override
 Widget build(BuildContext context) {
-    return Column(
-        children: [
-            ...
-            
-            FlavorText(richText),
-            
-            ...
-        ],
-    );
+  return Column(
+    children: [
+      ...
+      
+      FlavorText(richText),
+      
+      ...
+    ],
+  );
 }
 ```
 
@@ -108,11 +108,11 @@ and text alignment:
 
 ```dart
 FlavorText(
-    richText,
-    style: TextStyle(
-        color: Colors.green,
-    ),
-    textAlign: TextAlign.center,
+  richText,
+  style: TextStyle(
+    color: Colors.green,
+  ),
+  textAlign: TextAlign.center,
 )
 ```
 
@@ -129,13 +129,10 @@ something specifically tailored to your usecase, you can easily create and
 register your own tag. 
 
 First you need to create your own tag, for this example we will create a tag 
-that add the `Icons.help` icon in our text.
+that adds the `Icons.help` icon to our text.
 
 ```dart
 class HelpTag extends Tag {
-  @override
-  List<String> get supportedProperties => [];
-  
   @override
   InlineSpan build(BuildContext context) {
     return WidgetSpan(child: Icon(Icons.help));
@@ -143,16 +140,16 @@ class HelpTag extends Tag {
 }
 ```
 
-You can then register it:
+You can then register it by calling the `FlavorText.registerTag`:
 
 ```dart
 void main() {
-    ...
+  ...
 
-    // The first argument is the tag key.
-    FlavorText.registerTag('help', () => HelpTag());
+  // The first argument is the tag key.
+  FlavorText.registerTag('help', () => HelpTag());
 
-    ...
+  ...
 }
 ```
 
@@ -163,4 +160,39 @@ FlavorText('This text will end in an icon <help></help>');
 
 // Or using self-closing syntax
 FlavorText('This text will end in an icon <help/>');
+```
+
+If we want to add some properties to our tag for more fine tuned control, for 
+example we want to be able to change the color:
+
+```dart
+class HelpTag extends Tag {
+  @override
+  List<String> get supportedProperties => ['color'];
+
+  @override
+  InlineSpan build(BuildContext context) {
+    final colorValue = properties['color'].value;
+    var color = Colors.black;
+    if (colorValue != null) {
+      color = Color(int.parse(colorValue)); 
+    }
+
+    return WidgetSpan(
+      child: Icon(
+        Icons.help,
+        color: color,
+      )
+    );
+  }
+}
+```
+
+The `supportedProperties` define which properties are allowed on our tag, and we
+can read the value by accessing the `properties` field.
+
+Now that we have properties we can use these in our tag:
+
+```dart
+FlavorText('This text will end in an icon <help color="0xFFFF0000"></help>');
 ```
