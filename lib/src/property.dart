@@ -16,8 +16,4 @@ class Property {
   Property _withValue(String value) {
     return Property(name, required: required)..value = value;
   }
-
-  static Property _fromAttribute(XmlAttribute attribute, Property prop) {
-    return prop._withValue(attribute.value);
-  }
 }
