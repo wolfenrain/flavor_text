@@ -9,6 +9,7 @@ A lightweight and fully customisable text parser for Flutter.
 > Flavor text is often the last text on a card or on the rear of a toy card or 
 package, and is usually printed in italics or written between quotes to 
 distinguish it from game-affecting text.
+> &mdash; <cite>[Flavor Text - Wikipedia](https://en.wikipedia.org/wiki/Flavor_text)</cite>
 
 Writing rich text in Flutter can be a pain:
 
