@@ -45,6 +45,7 @@ class _MyHomePageState extends State<MyHomePage> {
           children: <Widget>[
             FlavorText('Hello <style color="0xFFFF0000">world</style>!'),
             FlavorText('Hello <help/> world!'),
+            FlavorText('Welcome <icon>home</icon>'),
           ],
         ),
       ),
