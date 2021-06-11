@@ -40,7 +40,7 @@ unit_test:
   only:
     refs:
       - merge_requests
-      - master
+      - main
     changes:
       - lib/**/*
       - test/**/*
@@ -59,8 +59,8 @@ tag:
       export TAG_NAME="$(awk '/^version: /{print $NF}' pubspec.yaml)"
       curl --fail --request POST --header "PRIVATE-TOKEN: ${GITLAB_API_TOKEN}" \
         --data-urlencode "tag_name=v${TAG_NAME}" \
-        --data-urlencode "ref=master" \
-        --data-urlencode "release_description=Check the [CHANGELOG.md](${CI_PROJECT_URL}/-/blob/master/CHANGELOG.md)" \
+        --data-urlencode "ref=main" \
+        --data-urlencode "release_description=Check the [CHANGELOG.md](${CI_PROJECT_URL}/-/blob/main/CHANGELOG.md)" \
         "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/repository/tags"
   environment:
     name: pub-dev-plugin
@@ -68,7 +68,7 @@ tag:
   when: manual
   only:
     refs:
-      - master
+      - main
 
 dry_run_publish:
   stage: publish
