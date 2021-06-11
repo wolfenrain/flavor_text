@@ -36,7 +36,7 @@ But writing rich text with Flavor Text is simply:
 
 ```dart
 FlavorText(
-  'Welcome <style color="0xFFFF0000">to my amazing <style weight="bold">App!</style></style>',
+  'Welcome <style color="0xFFFF0000">to my amazing <style fontWeight="bold">App!</style></style>',
 ),
 ```
 
@@ -119,7 +119,7 @@ FlavorText(
 You can also nest multiple tags, example:
 
 ```dart
-final richText = 'Hello <style color="0xFFFF0000">world and <style weight="bold">you</style></style>!';
+final richText = 'Hello <style color="0xFFFF0000">world and <style fontWeight="bold">you</style></style>!';
 ```
 
 ### Advanced Usage
@@ -158,7 +158,7 @@ Now that our new tag is registered we can use it in our text:
 ```dart
 FlavorText('This text will end in an icon <help></help>');
 
-// Or using self-closing syntax
+// Or using a self-closing tag.
 FlavorText('This text will end in an icon <help/>');
 ```
 
@@ -168,21 +168,21 @@ example we want to be able to change the color:
 ```dart
 class HelpTag extends Tag {
   @override
-  List<String> get supportedProperties => ['color'];
+  List<Property> get supportedProperties => [Property('color')];
 
   @override
   InlineSpan build(BuildContext context) {
-    final colorValue = properties['color'].value;
+    final colorValue = properties['color']?.value;
     var color = Colors.black;
     if (colorValue != null) {
-      color = Color(int.parse(colorValue)); 
+      color = Color(int.parse(colorValue));
     }
 
     return WidgetSpan(
       child: Icon(
         Icons.help,
         color: color,
-      )
+      ),
     );
   }
 }
@@ -194,5 +194,5 @@ can read the value by accessing the `properties` field.
 Now that we have properties we can use these in our tag:
 
 ```dart
-FlavorText('This text will end in an icon <help color="0xFFFF0000"></help>');
+FlavorText('This text will end in an icon <help color="0xFF00FF00"/>');
 ```
