@@ -1,15 +1,9 @@
 part of flavor_text;
 
-/// Tag for displaying icons as text.
-///
-/// By using the icon name as the text and setting the fontFamily
-/// to MaterialIcons wen we can render icons as text.
-///
-/// See [Icons] for a list of icons that are supported.
+/// Tag for rendering text with rainbow colors.
 ///
 /// ```dart
-/// final text1 = '<icon>home</icon>';
-/// final text2 = '<icon>phone</icon>';
+/// final text = '<rainbow>Rainbow text!</rainbow>';
 /// ```
 class RainbowTag extends Tag {
   static final List<Color> _colors = [

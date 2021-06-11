@@ -12,7 +12,6 @@ part of flavor_text;
 /// final text2 = '<icon>phone</icon>';
 /// ```
 class IconTag extends StyleTag {
-
   @override
   InlineSpan build(BuildContext context) {
     return TextSpan(
