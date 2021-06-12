@@ -24,7 +24,7 @@ class StyleTag extends Tag {
           'accentColor': () => Theme.of(context).accentColor,
         }).orElse(() => Color(int.parse(properties['color']!.value)));
       }),
-      fontWeight: when(properties['fontWeight'], {
+      fontWeight: when(properties['fontWeight']?.value, {
         'w100': () => FontWeight.w100,
         'w200': () => FontWeight.w200,
         'w300': () => FontWeight.w300,

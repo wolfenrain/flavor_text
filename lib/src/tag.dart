@@ -47,7 +47,11 @@ abstract class Tag {
   InlineSpan build(BuildContext context);
 
   /// Registered tags.
-  static final Map<String, TagBuilder> _tags = {};
+  static final Map<String, TagBuilder> _tags = {
+    'icon': () => IconTag(),
+    'rainbow': () => RainbowTag(),
+    'style': () => StyleTag(),
+  };
 
   /// Converts given [node] into a [Tag].
   ///

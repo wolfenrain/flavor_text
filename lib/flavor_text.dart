@@ -24,10 +24,19 @@ class FlavorText extends StatelessWidget {
 
   final TextAlign? textAlign;
 
+  /// An optional maximum number of lines for the text to span, wrapping if necessary.
+  /// If the text exceeds the given number of lines, it will be truncated according
+  /// to [overflow].
+  final int? maxLines;
+
+  final TextOverflow? overflow;
+
   FlavorText(
     this.text, {
     this.style,
     this.textAlign,
+    this.maxLines,
+    this.overflow,
   });
 
   InlineSpan _build(XmlNode node, BuildContext context, [InlineSpan? parent]) {
@@ -70,16 +79,17 @@ class FlavorText extends StatelessWidget {
       _build(xml.firstChild!, context),
       style: style,
       textAlign: textAlign,
+      maxLines: maxLines,
+      overflow: overflow,
     );
   }
 
-  static void registerDefaultTags() {
-    registerTag('icon', () => IconTag());
-    registerTag('rainbow', () => RainbowTag());
-    registerTag('style', () => StyleTag());
-  }
-
   static void registerTag<T extends Tag>(String name, TagBuilder<T> builder) {
+    if (Tag._tags.containsKey(name)) {
+      throw Exception(
+        'A tag with the name "$name" has already been registered',
+      );
+    }
     Tag._tags[name] = () => builder();
   }
 }

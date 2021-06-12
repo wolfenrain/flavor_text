@@ -62,25 +62,14 @@ See the [Basic Usage](#basic-usage) section for an introduction or jump directly
 
 ### Basic Usage
 
-Before you can start using Flavor Text you will need to register the Tag 
-components that you are gonna use.
-
-Flavor Text uses these Tag components to build your custom rich text. Flavor 
+Flavor Text uses Tag components to build your custom rich text. These Tag 
+components make the magic possible. Flavor 
 Text comes with a few [default Tag components](https://gitlab.com/wolfenrain/flavor_text/-/tree/main/lib/src/tags).
 
-To use the default tags you need to register them first, thankfully Flavor Text 
-has a method for that:
+You can register custom Tag components, see the [Advanced Usage](#advanced-usage) 
+section.
 
-```dart
-void main() {
-  FlavorText.registerDefaultTags();
-    
-  ...
-}
-```
- 
-Now that the default tags are registered you can start using them. First you 
-need to define the rich text you want to use as a string:
+Let's start with defining the rich text you want to use as a string:
 
 ```dart
 final richText = 'Hello <style color="0xFFFF0000">world</style>';

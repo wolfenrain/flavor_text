@@ -1,68 +1,87 @@
-import 'package:flavor_text/flavor_text.dart';
+import 'package:dashbook/dashbook.dart';
+import 'package:flavor_text/flavor_text.dart' hide Property;
 import 'package:flutter/material.dart';
+import 'package:flutter_highlight/flutter_highlight.dart';
 
-/// Tag that adds an [Icons.help] icon in text.
-class HelpTag extends Tag {
-  @override
-  List<Property> get supportedProperties => [Property('color')];
-
-  @override
-  InlineSpan build(BuildContext context) {
-    final colorValue = properties['color']?.value;
-    var color = Colors.black;
-    if (colorValue != null) {
-      color = Color(int.parse(colorValue));
-    }
-
-    return WidgetSpan(
-      child: Icon(
-        Icons.help,
-        color: color,
-      ),
-    );
-  }
-}
+final theme = {
+  'root': TextStyle(
+    color: Color(0xff383a42),
+    backgroundColor: Color(0x00000000),
+  ),
+  // 'name': TextStyle(color: Color(0xffe45649)),
+  'string': TextStyle(color: Color(0xff50a14f)),
+  'attr': TextStyle(color: Color(0xff986801)),
+  'tag': TextStyle(color: Color(0xffe45649)),
+};
 
 void main() {
-  FlavorText.registerDefaultTags();
-  FlavorText.registerTag('help', () => HelpTag());
+  final dashbook = Dashbook();
+  final tagsStory = dashbook.storiesOf('Tags');
 
-  runApp(MyApp());
+  tagsStory.add('style', (context) {
+    final fontWeight = context.listProperty('fontWeight', 'normal', [
+      'w100',
+      'w200',
+      'w300',
+      'w400',
+      'w500',
+      'w600',
+      'w700',
+      'w800',
+      'w900',
+      'normal',
+      'bold',
+    ]);
+    final fontSize = context.numberProperty('fontSize', 24);
+    final letterSpacing = context.numberProperty('letterSpacing', 2);
+    final color = context.colorProperty('color', Colors.blue);
+
+    return build('''<style 
+  color="0x${color.value.toRadixString(16)}"
+  fontSize="$fontSize" 
+  letterSpacing="$letterSpacing" 
+  fontWeight="$fontWeight">
+  Hello world
+</style>''');
+  }).add('icon', (context) {
+    final icon = context.listProperty('icon', 'home', [
+      'home', 'work', 'motorcycle',
+    ]);
+    final fontWeight = context.listProperty('fontWeight', 'normal', [
+      'w100',
+      'w200',
+      'w300',
+      'w400',
+      'w500',
+      'w600',
+      'w700',
+      'w800',
+      'w900',
+      'normal',
+      'bold',
+    ]);
+    final fontSize = context.numberProperty('fontSize', 24);
+    final letterSpacing = context.numberProperty('letterSpacing', 2);
+    final color = context.colorProperty('color', Colors.blue);
+    return build('''<icon
+  color="0x${color.value.toRadixString(16)}"
+  fontSize="$fontSize" 
+  letterSpacing="$letterSpacing" 
+  fontWeight="$fontWeight">
+  $icon
+</icon>''');
+  }).add('rainbow', (context) => build('<rainbow>Hello world</rainbow>'));
+
+  runApp(dashbook);
 }
 
-class MyApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flavor Text Example',
-      home: MyHomePage(),
-    );
-  }
-}
-
-class MyHomePage extends StatefulWidget {
-  @override
-  _MyHomePageState createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar:
-          AppBar(title: FlavorText('<rainbow>Flavor Text Example</rainbow>')),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            FlavorText(
-                '<style color="primaryColor">Hello</style> <style color="0xFFFF0000">world</style>!'),
-            FlavorText(
-                'Hello <help color="0xFF00FF00"/> <rainbow>world</rainbow>!'),
-            FlavorText('Welcome <icon color="primaryColor">home</icon>'),
-          ],
-        ),
-      ),
-    );
-  }
+Widget build(String text) {
+  return Column(
+    mainAxisAlignment: MainAxisAlignment.center,
+    children: [
+      HighlightView(text, language: 'xml', theme: theme),
+      SizedBox(height: 16),
+      FlavorText(text),
+    ],
+  );
 }

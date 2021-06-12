@@ -13,6 +13,8 @@ dependencies:
     sdk: flutter
   flavor_text:
     path: ../
+  dashbook: ^0.1.2
+  flutter_highlight: ^0.7.0
 
 dev_dependencies:
   flutter_test:
