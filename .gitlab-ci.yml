@@ -132,9 +132,9 @@ pages:
   artifacts:
     paths:
       - public
-  # only:
+  only:
   #   refs:
   #     - /^v.*$/
-  changes:
-    - example/**/*
-    - .gitlab-ci.yml
+    changes:
+      - example/**/*
+      - .gitlab-ci.yml
