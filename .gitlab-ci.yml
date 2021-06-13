@@ -129,7 +129,7 @@ pages:
     - cd example/ || exit 1
     - flutter pub get
     - flutter build web
-    - cp -r build/web public
+    - cp -r build/web ../public
   artifacts:
     paths:
       - public
