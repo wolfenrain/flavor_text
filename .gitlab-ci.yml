@@ -4,6 +4,7 @@ stages:
   - lint
   - test
   - publish
+  - deploy
 
 dartdoc:
   stage: lint
