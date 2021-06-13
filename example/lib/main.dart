@@ -45,7 +45,9 @@ void main() {
 </style>''');
   }).add('icon', (context) {
     final icon = context.listProperty('icon', 'home', [
-      'home', 'work', 'motorcycle',
+      'home',
+      'work',
+      'motorcycle',
     ]);
     final fontWeight = context.listProperty('fontWeight', 'normal', [
       'w100',
