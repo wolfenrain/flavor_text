@@ -5,12 +5,15 @@ class Property {
   /// Name of the property.
   final String name;
 
+  /// If it is a required property.
+  final bool required;
+
   /// The value of the property.
-  final String value;
+  late final String value;
 
-  Property._(this.name, this.value);
+  Property(this.name, {this.required = false});
 
-  static Property _fromAttribute(XmlAttribute attribute) {
-    return Property._(attribute.name.local, attribute.value);
+  Property _withValue(String value) {
+    return Property(name, required: required)..value = value;
   }
 }

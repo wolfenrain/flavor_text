@@ -10,8 +10,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  FlavorText.registerDefaultTags();
-
   testWidgets('Should display a simple string', (WidgetTester tester) async {
     await tester.pumpWidget(MaterialApp(
       home: FlavorText('Hello <style color="0xFFFF0000">world</style>!'),
