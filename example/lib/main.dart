@@ -3,35 +3,32 @@ import 'package:flavor_text/flavor_text.dart' hide Property;
 import 'package:flutter/material.dart';
 import 'package:flutter_highlight/flutter_highlight.dart';
 
-final theme = {
-  'root': TextStyle(
-    color: Color(0xff383a42),
-    backgroundColor: Color(0x00000000),
-  ),
-  // 'name': TextStyle(color: Color(0xffe45649)),
+final lightTheme = {
+  'root': TextStyle(color: Colors.black, backgroundColor: Color(0x00000000)),
   'string': TextStyle(color: Color(0xff50a14f)),
   'attr': TextStyle(color: Color(0xff986801)),
   'tag': TextStyle(color: Color(0xffe45649)),
 };
+final darkTheme = {
+  ...lightTheme,
+  'root': lightTheme['root']!.copyWith(color: Colors.white),
+};
 
 void main() {
-  final dashbook = Dashbook();
+  final dashbook = Dashbook.dualTheme(
+    title: 'flavor_text examples',
+    light: ThemeData.light(),
+    dark: ThemeData.dark(),
+    initWithLight: false,
+  );
   final tagsStory = dashbook.storiesOf('Tags');
 
   tagsStory.add('style', (context) {
-    final fontWeight = context.listProperty('fontWeight', 'normal', [
-      'w100',
-      'w200',
-      'w300',
-      'w400',
-      'w500',
-      'w600',
-      'w700',
-      'w800',
-      'w900',
+    final fontWeight = context.listProperty(
+      'fontWeight',
       'normal',
-      'bold',
-    ]);
+      StyleTag.fontWeights.keys.toList(),
+    );
     final fontSize = context.numberProperty('fontSize', 24);
     final letterSpacing = context.numberProperty('letterSpacing', 2);
     final color = context.colorProperty('color', Colors.blue);
@@ -49,22 +46,15 @@ void main() {
       'work',
       'motorcycle',
     ]);
-    final fontWeight = context.listProperty('fontWeight', 'normal', [
-      'w100',
-      'w200',
-      'w300',
-      'w400',
-      'w500',
-      'w600',
-      'w700',
-      'w800',
-      'w900',
+    final fontWeight = context.listProperty(
+      'fontWeight',
       'normal',
-      'bold',
-    ]);
+      StyleTag.fontWeights.keys.toList(),
+    );
     final fontSize = context.numberProperty('fontSize', 24);
     final letterSpacing = context.numberProperty('letterSpacing', 2);
     final color = context.colorProperty('color', Colors.blue);
+
     return build('''<icon
   color="0x${color.value.toRadixString(16)}"
   fontSize="$fontSize" 
@@ -72,18 +62,30 @@ void main() {
   fontWeight="$fontWeight">
   $icon
 </icon>''');
-  }).add('rainbow', (context) => build('<rainbow>Hello world</rainbow>'));
+  }).add('rainbow', (context) {
+    return build('<rainbow>Hello world</rainbow>');
+  });
 
   runApp(dashbook);
 }
 
 Widget build(String text) {
-  return Column(
-    mainAxisAlignment: MainAxisAlignment.center,
-    children: [
-      HighlightView(text, language: 'xml', theme: theme),
-      SizedBox(height: 16),
-      FlavorText(text),
-    ],
+  return Builder(
+    builder: (context) {
+      final isLight = Theme.of(context).brightness == Brightness.light;
+
+      return Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          HighlightView(
+            text,
+            language: 'xml',
+            theme: isLight ? lightTheme : darkTheme,
+          ),
+          SizedBox(height: 16),
+          FlavorText(text),
+        ],
+      );
+    },
   );
 }

@@ -134,8 +134,8 @@ pages:
     paths:
       - public
   only:
-  #   refs:
-  #     - /^v.*$/
-    changes:
-      - example/**/*
-      - .gitlab-ci.yml
+    refs:
+      - /^v.*$/
+    except:
+      refs:
+        - branches

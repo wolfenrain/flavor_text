@@ -51,6 +51,8 @@ Add `flavor_text` as a dependency in your pubspec.yaml file
 See the [API Docs](https://pub.dev/documentation/flavor_text/latest/flavor_text/flavor_text-library.html) 
 for detailed information on how to use Flavor Text.
 
+See the interactive example for of all the things that you can do with Flavor 
+Text: [Flavor Text example](https://wolfenrain.gitlab.io/flavor_text/#/)
 
 ## Usage
 
@@ -121,7 +123,7 @@ something specifically tailored to your usecase, you can easily create and
 register your own tag. 
 
 First you need to create your own tag, for this example we will create a tag 
-that adds the `Icons.help` icon to our text.
+that adds the `Icons.help` icon to our text:
 
 ```dart
 class HelpTag extends Tag {

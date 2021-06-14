@@ -7,6 +7,20 @@ part of flavor_text;
 /// final text2 = '<style color="0xFFFF0000" fontWeight="bold" fontSize="8.5">Styled text</style>';
 /// ```
 class StyleTag extends Tag {
+  static final fontWeights = {
+    'w100': () => FontWeight.w100,
+    'w200': () => FontWeight.w200,
+    'w300': () => FontWeight.w300,
+    'w400': () => FontWeight.w400,
+    'w500': () => FontWeight.w500,
+    'w600': () => FontWeight.w600,
+    'w700': () => FontWeight.w700,
+    'w800': () => FontWeight.w800,
+    'w900': () => FontWeight.w900,
+    'bold': () => FontWeight.bold,
+    'normal': () => FontWeight.normal,
+  };
+
   @override
   List<Property> get supportedProperties => [
         Property('color'),
@@ -24,19 +38,7 @@ class StyleTag extends Tag {
           'accentColor': () => Theme.of(context).accentColor,
         }).orElse(() => Color(int.parse(properties['color']!.value)));
       }),
-      fontWeight: when(properties['fontWeight']?.value, {
-        'w100': () => FontWeight.w100,
-        'w200': () => FontWeight.w200,
-        'w300': () => FontWeight.w300,
-        'w400': () => FontWeight.w400,
-        'w500': () => FontWeight.w500,
-        'w600': () => FontWeight.w600,
-        'w700': () => FontWeight.w700,
-        'w800': () => FontWeight.w800,
-        'w900': () => FontWeight.w900,
-        'bold': () => FontWeight.bold,
-        'normal': () => FontWeight.normal,
-      }),
+      fontWeight: when(properties['fontWeight']?.value, fontWeights),
       fontSize: properties['fontSize'] != null
           ? double.parse(properties['fontSize']!.value)
           : null,
