@@ -7,7 +7,9 @@ part of flavor_text;
 /// - [IconTag] for adding an icon to the text.
 abstract class Tag {
   /// The properties this tag supports.
-  List<String> get supportedProperties;
+  ///
+  /// Override this with the list of properties your tag is supporting.
+  List<Property> get supportedProperties => [];
 
   /// Name of the tag.
   ///
@@ -45,7 +47,11 @@ abstract class Tag {
   InlineSpan build(BuildContext context);
 
   /// Registered tags.
-  static final Map<String, TagBuilder> _tags = {};
+  static final Map<String, TagBuilder> _tags = {
+    'icon': () => IconTag(),
+    'rainbow': () => RainbowTag(),
+    'style': () => StyleTag(),
+  };
 
   /// Converts given [node] into a [Tag].
   ///
@@ -67,15 +73,31 @@ Register your custom tag like so: Tag.registerTag("${node.name.local}", () => Yo
           node.children.length == 1 && node.children.first is! XmlElement
               ? node.text
               : '';
-      tag._properties = node.attributes.associate((value) {
-        final property = Property._fromAttribute(value);
-        if (!tag.supportedProperties.contains(property.name)) {
+
+      final properties = <Property>[];
+      for (final property in tag.supportedProperties.where((p) => p.required)) {
+        final attribute =
+            node.attributes.firstOrNull((a) => a.name.local == property.name);
+        if (attribute == null) {
           throw Exception(
-            'Property "${property.name}" is not supported on the "${tag.name}" tag',
+            'Required property "${property.name}" not found on "${tag.name}"',
           );
         }
-        return Pair(property.name, property);
-      });
+      }
+
+      for (final attribute in node.attributes) {
+        final property = tag.supportedProperties
+            .firstOrNull((p) => attribute.name.local == p.name);
+
+        if (property == null) {
+          throw Exception(
+            'Property "${attribute.name.local}" is not supported on the "${tag.name}" tag',
+          );
+        }
+
+        properties.add(property._withValue(attribute.value));
+      }
+      tag._properties = properties.associateBy((prop) => prop.name);
     } else if (node is XmlText) {
       tag = TextTag();
       tag._text = node.text;

@@ -9,6 +9,37 @@ A lightweight and fully customisable text parser for Flutter.
 > Flavor text is often the last text on a card or on the rear of a toy card or 
 package, and is usually printed in italics or written between quotes to 
 distinguish it from game-affecting text.
+> &mdash; <cite>[Flavor Text - Wikipedia](https://en.wikipedia.org/wiki/Flavor_text)</cite>
+
+Writing rich text in Flutter can be a pain:
+
+```dart
+Text.rich(
+  TextSpan(
+    text: 'Welcome',
+    children: [
+      TextSpan(
+        text: 'To my amazing',
+        children: [
+          TextSpan(
+            text: 'App!',
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
+        ],
+        style: TextStyle(color: Color(0xFFFF0000)),
+      )
+    ],
+  ),
+),
+```
+
+But writing rich text with Flavor Text is simply:
+
+```dart
+FlavorText(
+  'Welcome <style color="0xFFFF0000">to my amazing <style fontWeight="bold">App!</style></style>',
+),
+```
 
 ## Installation
 
@@ -20,6 +51,8 @@ Add `flavor_text` as a dependency in your pubspec.yaml file
 See the [API Docs](https://pub.dev/documentation/flavor_text/latest/flavor_text/flavor_text-library.html) 
 for detailed information on how to use Flavor Text.
 
+See the interactive example for of all the things that you can do with Flavor 
+Text: [Flavor Text example](https://wolfenrain.gitlab.io/flavor_text/#/)
 
 ## Usage
 
@@ -27,27 +60,18 @@ Flavor Text allows you to create custom rich text using strings. You don't have
 to mess with `Text.rich` and `TextSpan`'s. Just you, your text and a single 
 widget.
 
+See the [Basic Usage](#basic-usage) section for an introduction or jump directly to the [Advanced Usage](#advanced-usage) section.
+
 ### Basic Usage
 
-Before you can start using Flavor Text you will need to register the Tag 
-components that you are gonna use.
-
-Flavor Text uses these Tag components to build your custom rich text. Flavor 
+Flavor Text uses Tag components to build your custom rich text. These Tag 
+components make the magic possible. Flavor 
 Text comes with a few [default Tag components](https://gitlab.com/wolfenrain/flavor_text/-/tree/main/lib/src/tags).
 
-To use the default tags you need to register them first, thankfully Flavor Text 
-has a method for that:
+You can register custom Tag components, see the [Advanced Usage](#advanced-usage) 
+section.
 
-```dart
-void main() {
-    FlavorText.registerDefaultTags();
-    
-    ...
-}
-```
- 
-Now that the default tags are registered you can start using them. First you 
-need to define the rich text you want to use as a string:
+Let's start with defining the rich text you want to use as a string:
 
 ```dart
 final richText = 'Hello <style color="0xFFFF0000">world</style>';
@@ -59,15 +83,15 @@ string in our Widget tree like so:
 ```dart
 @override
 Widget build(BuildContext context) {
-    return Column(
-        children: [
-            ...
-            
-            FlavorText(richText),
-            
-            ...
-        ],
-    );
+  return Column(
+    children: [
+      ...
+      
+      FlavorText(richText),
+      
+      ...
+    ],
+  );
 }
 ```
 
@@ -78,18 +102,18 @@ and text alignment:
 
 ```dart
 FlavorText(
-    richText,
-    style: TextStyle(
-        color: Colors.green,
-    ),
-    textAlign: TextAlign.center,
+  richText,
+  style: TextStyle(
+    color: Colors.green,
+  ),
+  textAlign: TextAlign.center,
 )
 ```
 
 You can also nest multiple tags, example:
 
 ```dart
-final richText = 'Hello <style color="0xFFFF0000">world and <style weight="bold">you</style></style>!';
+final richText = 'Hello <style color="0xFFFF0000">world and <style fontWeight="bold">you</style></style>!';
 ```
 
 ### Advanced Usage
@@ -99,13 +123,10 @@ something specifically tailored to your usecase, you can easily create and
 register your own tag. 
 
 First you need to create your own tag, for this example we will create a tag 
-that add the `Icons.help` icon in our text.
+that adds the `Icons.help` icon to our text:
 
 ```dart
 class HelpTag extends Tag {
-  @override
-  List<String> get supportedProperties => [];
-  
   @override
   InlineSpan build(BuildContext context) {
     return WidgetSpan(child: Icon(Icons.help));
@@ -113,16 +134,16 @@ class HelpTag extends Tag {
 }
 ```
 
-You can then register it:
+You can then register it by calling the `FlavorText.registerTag`:
 
 ```dart
 void main() {
-    ...
+  ...
 
-    // The first argument is the tag key.
-    FlavorText.registerTag('help', () => HelpTag());
+  // The first argument is the tag key.
+  FlavorText.registerTag('help', () => HelpTag());
 
-    ...
+  ...
 }
 ```
 
@@ -131,6 +152,41 @@ Now that our new tag is registered we can use it in our text:
 ```dart
 FlavorText('This text will end in an icon <help></help>');
 
-// Or using self-closing syntax
+// Or using a self-closing tag.
 FlavorText('This text will end in an icon <help/>');
+```
+
+If we want to add some properties to our tag for more fine tuned control, for 
+example we want to be able to change the color:
+
+```dart
+class HelpTag extends Tag {
+  @override
+  List<Property> get supportedProperties => [Property('color')];
+
+  @override
+  InlineSpan build(BuildContext context) {
+    final colorValue = properties['color']?.value;
+    var color = Colors.black;
+    if (colorValue != null) {
+      color = Color(int.parse(colorValue));
+    }
+
+    return WidgetSpan(
+      child: Icon(
+        Icons.help,
+        color: color,
+      ),
+    );
+  }
+}
+```
+
+The `supportedProperties` define which properties are allowed on our tag, and we
+can read the value by accessing the `properties` field.
+
+Now that we have properties we can use these in our tag:
+
+```dart
+FlavorText('This text will end in an icon <help color="0xFF00FF00"/>');
 ```

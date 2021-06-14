@@ -4,6 +4,7 @@ stages:
   - lint
   - test
   - publish
+  - deploy
 
 dartdoc:
   stage: lint
@@ -115,6 +116,23 @@ pub_dev_publish:
       EOF
     - flutter pub get
     - flutter pub publish -f
+  only:
+    refs:
+      - /^v.*$/
+  except:
+    refs:
+      - branches
+
+pages:
+  stage: deploy
+  script:
+    - cd example/ || exit 1
+    - flutter pub get
+    - flutter build web
+    - cp -r build/web ../public
+  artifacts:
+    paths:
+      - public
   only:
     refs:
       - /^v.*$/
