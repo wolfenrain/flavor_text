@@ -136,6 +136,6 @@ pages:
   only:
     refs:
       - /^v.*$/
-    except:
-      refs:
-        - branches
+  except:
+    refs:
+      - branches
