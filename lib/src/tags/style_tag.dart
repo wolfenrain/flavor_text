@@ -35,7 +35,7 @@ class StyleTag extends Tag {
       color: iff(properties['color'] != null, () {
         return when(properties['color']!.value, {
           'primaryColor': () => Theme.of(context).primaryColor,
-          'accentColor': () => Theme.of(context).accentColor,
+          'accentColor': () => Theme.of(context).colorScheme.secondary,
         }).orElse(() => Color(int.parse(properties['color']!.value)));
       }),
       fontWeight: when(properties['fontWeight']?.value, fontWeights),

@@ -1,4 +1,4 @@
-image: cirrusci/flutter:stable
+image: ghcr.io/cirruslabs/flutter:stable
 
 stages:
   - lint
@@ -10,7 +10,7 @@ dartdoc:
   stage: lint
   script:
     - flutter pub get
-    - dartdoc --no-auto-include-dependencies --quiet
+    - dart doc .
   only:
     refs:
       - merge_requests
@@ -24,7 +24,7 @@ flutter_analyze:
   script:
     - flutter pub get
     - flutter analyze --pub
-    - flutter format -n --set-exit-if-changed .
+    - dart format --set-exit-if-changed .
   only:
     refs:
       - merge_requests

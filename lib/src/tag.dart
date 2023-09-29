@@ -71,7 +71,7 @@ Register your custom tag like so: Tag.registerTag("${node.name.local}", () => Yo
       tag._name = node.name.local;
       tag._text =
           node.children.length == 1 && node.children.first is! XmlElement
-              ? node.text
+              ? node.value ?? node.innerText
               : '';
 
       final properties = <Property>[];
@@ -100,7 +100,7 @@ Register your custom tag like so: Tag.registerTag("${node.name.local}", () => Yo
       tag._properties = properties.associateBy((prop) => prop.name);
     } else if (node is XmlText) {
       tag = TextTag();
-      tag._text = node.text;
+      tag._text = node.value;
     }
 
     return tag;
